@@ -1,5 +1,3 @@
-# OUTDATED
-
 ![](https://cdn.discordapp.com/attachments/699596234104504450/700653694865113098/banner.png)
 # Info
 
@@ -29,14 +27,6 @@ These can all be installed with `pip install -r requirements.txt`
 	**admin**: The Discord user id of the owner of the bot, vera will only react to some commands if they are issued by the right person.
 
 4. Run Vera `python3 app.py`
-
-# The database
-
-Vera will create a `.db` file on first boot named `database.db`, This is where Veras AI model is stored.
-
-An existing database can be used just by copying it to the Vera directory and making sure it is called `database.db`.
-
-Our pre-trained model is available on [our discord server.](https://discord.gg/jeXnXqH)
 
 # Image support
 
