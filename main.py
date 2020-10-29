@@ -57,12 +57,38 @@ class VeraBot(discord.Client):
             #response = webhook.execute()
         except:
             logger.info(f"Error in inital webhook")
-
     async def on_ready(self):
         if settings['status'] != "":
             await self.change_presence(activity=discord.Game(name=str(status)))
         await self.webhook_online()
         logger.info(f"{self.user} is now online.")
+
+    def ImageDatabase(self,server_name,status):
+        if status == 'enable':
+            database.execute("UPDATE image_support SET status = 'true' WHERE server_id = "+server_name)
+            database.commit()
+        elif status == 'disable':
+            database.execute("UPDATE image_support SET status = 'false' WHERE server_id = "+server_name)
+            database.commit()
+        elif status == 'query_exist':
+            db_cur.execute("SELECT * FROM image_support WHERE server_id = "+server_name)
+            res = db_cur.fetchone()
+            print(res)
+            if res:
+                return True
+            else:
+                return False
+        elif status == 'query':
+            db_cur.execute("SELECT status FROM image_support WHERE server_id = "+server_name)
+            res = db_cur.fetchone()
+            print(res)
+            if res[0] == "true":
+                return True
+            elif res[0] == "false":
+                return False
+        elif status == "add":
+            database.execute("INSERT INTO image_support (server_id,status) VALUES ("+server_name+",'true')")
+            database.commit()
 
     def CheckImageList(self,server_name):
         db_cur.execute("SELECT status FROM image_support WHERE server_id =="+server_name)
@@ -90,6 +116,17 @@ class VeraBot(discord.Client):
         if message.author == self.user:
             return
 
+        check_res = self.ImageDatabase(str(message.guild.id),"query_exist")
+        if check_res == True:
+            pass
+        elif check_res == False:
+            self.ImageDatabase(str(message.guild.id),"add")
+
+        image_status = self.ImageDatabase(str(message.guild.id),"query")
+        if image_status == True:
+            image_time = 'true'
+        elif image_status == False:
+            image_time = "false"
         if message.guild == None or settings['channel_name'] in message.channel.name:
             if message.content == settings['prefix']+"quit" and message.author.id in settings['admin']:
                 logger.info("Exiting")
@@ -97,18 +134,29 @@ class VeraBot(discord.Client):
                 await self.logout()
 
                 exit()
+
+            elif message.content == "^images enable" and message.author.guild_permissions(manage_channels=True):
+                self.ImageDatabase(str(message.guild.id),"enable")
+                await message.channel.send("**Image Support** Enabled")
+            elif message.content == "^images diable" and message.author.guild_permissions(manage_channels=True):
+                self.ImageDatabase(str(message.guild.id),"disable")
+                await message.channel.send("**Image Support** Disabled")
+
             else:
                 if message.content == "" and message.attachments == True or len(message.attachments) > 0:
                     await message.channel.trigger_typing()
-                    image = self.getImage(f"images/")
-                    for file in message.attachments:
-                        self.downloadFile(file.url, './images/')
-                    await message.channel.send(file=discord.File(image))
+                    if image_time == 'enabled':
+                        image = self.getImage(f"images/")
+                        for file in message.attachments:
+                            self.downloadFile(file.url, './images/')
+                        await message.channel.send(file=discord.File(image))
+                    else:
+                        pass
                 else:
                     logger.info(f"Input: {message.content}")
                     await message.channel.trigger_typing()
                     num = random.randint(1, 20)
-                    if num == 10:
+                    if num == 10 and image_time == "true":
                         image = self.getImage("images/")
                         await message.channel.send(file=discord.File(image))
                     else:
