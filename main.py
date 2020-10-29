@@ -17,6 +17,13 @@ import urllib.request
 import sqlite3
 
 # BOT INIT
+
+database = sqlite3.connect("vera.db")
+db_cur = database.cursor()
+
+database.execute("CREATE TABLE IF NOT EXISTS image_support (server_id TEXT, status TEXT)")
+database.execute("CREATE TABLE IF NOT EXISTS blacklist (server_id TEXT, status TEXT)")
+
 with open('statements.txt', 'r+') as file:
     statements = json.load(file)
 with open('responses.txt', 'r+') as file:
@@ -57,6 +64,10 @@ class VeraBot(discord.Client):
         await self.webhook_online()
         logger.info(f"{self.user} is now online.")
 
+    def CheckImageList(self,server_name):
+        db_cur.execute("SELECT status FROM image_support WHERE server_id =="+server_name)
+        res = db_cur.fetchone()
+        print(res)
     def downloadFile(self, url, path):
         try:
             letters = string.ascii_lowercase
@@ -76,21 +87,8 @@ class VeraBot(discord.Client):
         return filelocation + file
 
     async def on_message(self, message):
-        # Ignore the bypass variable, it was from a old whitelist that is not included.
-        bypass = "true"
         if message.author == self.user:
             return
-        if bypass == "false":
-            if settings['channel_name'] in message.channel.name:
-                if res:
-                    pass
-                else:
-                    msg = discord.Embed(title=f"Unauthorised Use Of Vera",
-                                        description=f"This Server Has Not Been Added To The Vera Whitelist. Please Contact Staff On The Vera Discord Server (discord.gg/EqHwKUb) If You Believe This Was A Mistake.", color=16711680)
-                    await message.channel.send(embed=msg)
-                    return
-        else:
-            pass
 
         if message.guild == None or settings['channel_name'] in message.channel.name:
             if message.content == settings['prefix']+"quit" and message.author.id in settings['admin']:
