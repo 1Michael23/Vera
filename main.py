@@ -45,7 +45,7 @@ class VeraBot(discord.Client):
             servers_serving = servers_serving+"\n"+s.name
             amt_server += 1
         try:
-            webhook = DiscordWebhook(webhook)
+            webhook = DiscordWebhook(webhook_url)
             embed = DiscordEmbed(title=f'Vera Online Running On:  {str(amt_server)} Server(s)\nRunning As: {str(self.user)}',
                                  description=f'Using Key: {l_key}\nServing Server(s):\n{str(servers_serving)}\n', color=242424)
             webhook.add_embed(embed)
