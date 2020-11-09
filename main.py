@@ -76,7 +76,6 @@ class VeraBot(discord.Client):
         return filelocation + file
 
     async def on_message(self, message):
-        # Ignore the bypass variable, it was from a old whitelist that is not included.
         if message.author == self.user:
             return
         else:
