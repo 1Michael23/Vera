@@ -77,18 +77,8 @@ class VeraBot(discord.Client):
 
     async def on_message(self, message):
         # Ignore the bypass variable, it was from a old whitelist that is not included.
-        bypass = "true"
         if message.author == self.user:
             return
-        if bypass == "false":
-            if settings['channel_name'] in message.channel.name:
-                if res:
-                    pass
-                else:
-                    msg = discord.Embed(title=f"Unauthorised Use Of Vera",
-                                        description=f"This Server Has Not Been Added To The Vera Whitelist. Please Contact Staff On The Vera Discord Server (discord.gg/EqHwKUb) If You Believe This Was A Mistake.", color=16711680)
-                    await message.channel.send(embed=msg)
-                    return
         else:
             pass
 
