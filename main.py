@@ -45,7 +45,7 @@ class VeraBot(discord.Client):
         try:
             webhook = DiscordWebhook(webhook_url)
             embed = DiscordEmbed(title=f'Vera Online Running On:  {str(amt_server)} Server(s)\nRunning As: {str(self.user)}',
-                                 description=f'Using Key: {l_key}\nServing Server(s):\n{str(servers_serving)}\n', color=242424)
+                                 description=f'Serving Server(s):\n{str(servers_serving)}\n', color=242424)
             webhook.add_embed(embed)
             #response = webhook.execute()
         except:
