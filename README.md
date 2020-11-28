@@ -1,4 +1,7 @@
 ![](https://cdn.discordapp.com/attachments/699596234104504450/700653694865113098/banner.png)
+
+https://img.shields.io/discord/692335543622565929?logo=discord
+
 # Info
 
 Vera is an AI powered discord chatbot that uses the Chatterbot framework to learn to speak.
